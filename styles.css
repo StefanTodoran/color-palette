@@ -1,0 +1,63 @@
+body {
+    font-family: 'Quicksand', sans-serif;
+}
+
+h1, h2, body {
+    margin: 0;
+}
+
+h1, button {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1rem;
+}
+
+p {
+    width: min(50rem, 90vw);
+}
+
+button {
+    border: none;
+    background: none;
+}
+
+button:hover {
+    opacity: 0.5;
+}
+
+#main-body, #colors-container, .color-card {
+    display: flex;
+}
+
+#main-body, .color-card {
+    flex-direction: column;
+}
+
+#main-body {
+    height: max(calc(100vh - 20px), 750px);
+    margin: 10px
+}
+
+#intro-container {
+    flex: 0 1 auto;
+}
+
+#colors-container {
+    flex-direction: row;
+    width: 100%;
+    flex: 1 1 auto;
+}
+
+.color-card {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.place-holder-fill {
+    background-color: #eeeeee;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
