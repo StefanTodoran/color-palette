@@ -100,8 +100,10 @@
       return;
     }
 
-    /* learned the line below from:
-    https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore */
+    /*
+     * learned the line below from:
+     * https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore
+     */
     cards[pos].parentNode.insertBefore(cards[pos], cards[pos - 1]);
   }
 
@@ -114,10 +116,13 @@
     let cards = document.querySelectorAll('.color-card');
     let pos = findCard(cards, evt.currentTarget.card);
     if (pos === cards.length) {
-      return
+      return;
     }
-    // learned the line below from:
-    // https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore
+
+    /*
+     * learned the line below from:
+     * https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore
+     */
     cards[pos].parentNode.insertBefore(cards[pos], cards[pos + 2]);
   }
 
@@ -155,7 +160,7 @@
     input.value = middle;
 
     let container = document.querySelector('#colors-container');
-    container.insertBefore(newCard,cards[pos+1]);
+    container.insertBefore(newCard,cards[pos + 1]);
 
     setCardListeners();
   }
@@ -175,7 +180,7 @@
   /**
    * Sets the span and input of each card to a random color. Then, calls setCardColors
    * to update all card backgroundColor properties.
-   * */
+   */
   function randomizeColors() {
     let cards = document.querySelectorAll('.color-card');
     for (let i = 0; i < cards.length; i++) {
@@ -224,7 +229,10 @@
     return hex.length === 1 ? "0" + hex : hex;
   }
 
-  /** Returns a random, valid, hexadecimal color string. */
+  /**
+   * Returns a random, valid, hexadecimal color string.
+   * @return {string} a hex color
+   */
   function getRandomColor() {
     let hex = '0123456789ABCDEF';
     let color = '#';
