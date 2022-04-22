@@ -8,7 +8,7 @@
  */
 
 'use strict';
-(function (){
+(function() {
 
   window.addEventListener('load', init);
 
@@ -99,9 +99,10 @@
     if (pos === 0) {
       return;
     }
-    // learned the line below from:
-    // https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore
-    cards[pos].parentNode.insertBefore(cards[pos],cards[pos-1]);
+
+    /* learned the line below from:
+    https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore */
+    cards[pos].parentNode.insertBefore(cards[pos], cards[pos - 1]);
   }
 
   /**
@@ -117,7 +118,7 @@
     }
     // learned the line below from:
     // https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore
-    cards[pos].parentNode.insertBefore(cards[pos],cards[pos+2]);
+    cards[pos].parentNode.insertBefore(cards[pos], cards[pos + 2]);
   }
 
   /**
@@ -136,11 +137,15 @@
     if (pos === cards.length) {
       colorB = colorA;
     } else {
-      colorB = cards[pos+1].querySelector('span').textContent;
+      colorB = cards[pos + 1].querySelector('span').textContent;
     }
     let rgba = convertToRBG(colorA);
     let rgbb = convertToRBG(colorB);
-    let middle = convertToHex((rgba[0]+rgbb[0])/2,(rgba[1]+rgbb[1])/2,(rgba[2]+rgbb[2])/2);
+    let middle = convertToHex(
+        (rgba[0] + rgbb[0]) / 2,
+        (rgba[1] + rgbb[1]) / 2,
+        (rgba[2] + rgbb[2]) / 2
+    );
 
     let newCard = cards[0].cloneNode(true);
     let span = newCard.querySelector('span');
@@ -167,8 +172,10 @@
     evt.currentTarget.card.style.backgroundColor = color;
   }
 
-  /** Sets the span and input of each card to a random color. Then, calls setCardColors
-   * to update all card backgroundColor properties. */
+  /**
+   * Sets the span and input of each card to a random color. Then, calls setCardColors
+   * to update all card backgroundColor properties.
+   * */
   function randomizeColors() {
     let cards = document.querySelectorAll('.color-card');
     for (let i = 0; i < cards.length; i++) {
@@ -189,9 +196,9 @@
    * @return {number[]} array of length three of the form [red, green, blue]
    */
   function convertToRBG(hexColor) {
-    const r = parseInt(hexColor.substr(1,2), 16);
-    const g = parseInt(hexColor.substr(3,2), 16);
-    const b = parseInt(hexColor.substr(5,2), 16);
+    const r = parseInt(hexColor.substr(1, 2), 16);
+    const g = parseInt(hexColor.substr(3, 2), 16);
+    const b = parseInt(hexColor.substr(5, 2), 16);
     return [r, g, b];
   }
 
@@ -213,7 +220,7 @@
    * @return {string} 2 digit hexadecimal color string equivalent
    */
   function colorToHex(color) {
-    let hex = color.toString(16).substr(0,2);
+    let hex = color.toString(16).substr(0, 2);
     return hex.length === 1 ? "0" + hex : hex;
   }
 
