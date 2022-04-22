@@ -160,7 +160,7 @@
     input.value = middle;
 
     let container = document.querySelector('#colors-container');
-    container.insertBefore(newCard,cards[pos + 1]);
+    container.insertBefore(newCard, cards[pos + 1]);
 
     setCardListeners();
   }
