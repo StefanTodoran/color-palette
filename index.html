@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<!--
+  ***
+  Stefan Todoran
+  3/29/2022
+  Section AF, Lucas & Shriya
+
+  This file is the html for a color palette creator website.
+  The html includes the 4 default color cards, a brief intro guide
+  and a button to randomize the palette.
+  ***
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,45 +23,56 @@
         <section id="intro-container">
             <h1>Color Palette Creator</h1>
             <h2>Built by Stefan Todoran</h2>
-            <p>
-                How to use: Start by filling in some of the colors you already have, or by generating
-                a new, random palette using the button. You can use the plus between two colors to get
-                the middle color between them. Click on the colors hex code to copy it to your
-                clipboard.
-            </p>
+            <section id="intro">
+                <p>
+                    How to use: Start by filling in some colors you already have, or by generating
+                    a new, random palette using the button. You can use the plus between two colors to get
+                    the middle color between them. Click on the colors hex code to copy it to your
+                    clipboard.
+                </p>
+               <button id="randomize">RANDOMIZE</button>
+            </section>
         </section>
         <section id="colors-container">
             <div class="color-card place-holder-fill">
+                <input type="color" value="#D7F2BA">
                 <span>#D7F2BA</span>
                 <span>
                     <button class="move-left-button">&#11160;</button>
                     <button class="remove-button">&#128473;</button>
                     <button class="move-right-button">&#11162;</button>
                 </span>
+                <button class="add-middle-button">+</button>
             </div>
             <div class="color-card place-holder-fill">
+                <input type="color" value="#BDE4A8">
                 <span>#BDE4A8</span>
                 <span>
                     <button class="move-left-button">&#11160;</button>
                     <button class="remove-button">&#128473;</button>
                     <button class="move-right-button">&#11162;</button>
                 </span>
+                <button class="add-middle-button">+</button>
             </div>
             <div class="color-card place-holder-fill">
+                <input type="color" value="#9CC69B">
                 <span>#9CC69B</span>
                 <span>
                     <button class="move-left-button">&#11160;</button>
                     <button class="remove-button">&#128473;</button>
                     <button class="move-right-button">&#11162;</button>
                 </span>
+                <button class="add-middle-button">+</button>
             </div>
             <div class="color-card place-holder-fill">
+                <input type="color" value="#79B4A9">
                 <span>#79B4A9</span>
                 <span>
                     <button class="move-left-button">&#11160;</button>
                     <button class="remove-button">&#128473;</button>
                     <button class="move-right-button">&#11162;</button>
                 </span>
+                <button class="add-middle-button">+</button>
             </div>
         </section>
     </article>
