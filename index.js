@@ -1,12 +1,3 @@
-/*
- * Stefan Todoran
- * 3/29/2022
- * Section AF, Lucas & Shriya
- *
- * This is the javascript that handles randomization of the color palette,
- * removal of color cards, adding of middle color cards, and moving of color cards.
- */
-
 'use strict';
 (function() {
 
@@ -60,6 +51,10 @@
       let addMiddle = card.querySelector('.add-middle-button');
       addMiddle.addEventListener('click', addCard);
       addMiddle.card = card;
+
+      let colorLabel = card.querySelector('.color-value');
+      colorLabel.addEventListener('click', copyColor);
+      colorLabel.card = card;
     }
   }
 
@@ -171,26 +166,61 @@
    * @param {Event} evt event object for the event which triggered the function
    */
   function colorChange(evt) {
-    const color = evt.target.value;
-    let span = evt.currentTarget.card.querySelector('span');
-    span.textContent = color;
-    evt.currentTarget.card.style.backgroundColor = color;
+    updateCardColor(evt.currentTarget.card, evt.target.value);
   }
 
   /**
-   * Sets the span and input of each card to a random color. Then, calls setCardColors
+   * Updates a card's background and label to the provided color. Also updates the card
+   * ui to either be light or dark based on that color's brightness automatically.
+   * @param {Element} card the card the change
+   * @param {string} color the hex string of the updated color
+   */
+  function updateCardColor(card, color) {
+    card.style.backgroundColor = color;
+    card.querySelector('input').value = color;
+    let span = card.querySelector('span');
+    span.textContent = color;
+    if (!isLightColor(color)) {
+      span.classList.add('light-ui');
+      let buttons = card.querySelectorAll('button');
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.add('light-ui');
+      }
+    } else {
+      span.classList.remove('light-ui');
+      let buttons = card.querySelectorAll('button');
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('light-ui');
+      }
+    }
+  }
+
+  /**
+   * On click function for the span displaying card color hex. Copies color to clipboard.
+   * Also handles the tooltip, changing the text.
+   * @param {Event} evt event object for the event which triggered the function
+   */
+  function copyColor(evt) {
+    let span = evt.currentTarget.card.querySelector('span');
+    navigator.clipboard.writeText(span.textContent);
+    let tooltip = evt.currentTarget.card.querySelector('.tooltip');
+    tooltip.textContent = "Copied!";
+
+    setTimeout(function() {
+      tooltip.textContent = "Copy to Clipboard";
+    }, 2500);
+  }
+
+  /**
+   * Changes each card to use a random color.
    * to update all card backgroundColor properties.
    */
   function randomizeColors() {
     let cards = document.querySelectorAll('.color-card');
     for (let i = 0; i < cards.length; i++) {
       let color = getRandomColor();
-      let span = cards[i].querySelector('span');
-      span.textContent = color;
-      let input = cards[i].querySelector('input');
-      input.value = color;
+      updateCardColor(cards[i], color);
     }
-    setCardColors();
   }
 
   /* === HELPER FUNCTIONS === */
@@ -240,6 +270,46 @@
       color += hex[Math.floor(Math.random() * 16)];
     }
     return color;
+  }
+
+  /**
+   * Determines whether a color is light or dark. This function is here courtesy of
+   * Andreas Wik, see https://awik.io/determine-color-bright-dark-using-javascript/
+   * @param color a hex or rgb color string
+   * @return {boolean} true if the color is light, false otherwise
+   */
+  function isLightColor(color) {
+    // Variables for red, green, blue values
+    var r, g, b, hsp;
+
+    // Check the format of the color, HEX or RGB?
+    if (color.match(/^rgb/)) {
+      // If RGB --> store the red, green, blue values in separate variables
+      color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+
+      r = color[1];
+      g = color[2];
+      b = color[3];
+    }
+    else {
+      // If hex --> Convert it to RGB: http://gist.github.com/983661
+      color = +("0x" + color.slice(1).replace(
+        color.length < 5 && /./g, '$&$&'));
+
+      r = color >> 16;
+      g = color >> 8 & 255;
+      b = color & 255;
+    }
+
+    // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+    hsp = Math.sqrt(
+      0.299 * (r * r) +
+      0.587 * (g * g) +
+      0.114 * (b * b)
+    );
+
+    // Using the HSP value, determine whether the color is light or dark
+    return hsp > 127.5;
   }
 
 })();

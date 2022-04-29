@@ -1,14 +1,3 @@
-/*
-  Stefan Todoran
-  3/29/2022
-  Section AF, Lucas & Shriya
-
-  This file contains the css for the color palette creator
-  site. Although there a quite a few styles in here the look
-  of the site is quite minimal and most of the color card
-  styles are handled by the javascript.
-*/
-
 body, #intro button {
   font-family: 'Quicksand', sans-serif;
   overflow-x: hidden;
@@ -96,8 +85,35 @@ input {
   transform: translateX(50%);
   z-index: 1;
   opacity: 0;
+  font-weight: bold;
 }
 
 .color-card:hover .add-middle-button {
   opacity: 1;
+}
+
+.color-value, button {
+  cursor: pointer;
+}
+
+.tooltip {
+  background-color: whitesmoke;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  position: absolute;
+  transform: translateY(1.5em);
+
+  opacity: 0;
+}
+
+.color-value:hover + .tooltip {
+  opacity: 1;
+}
+
+.light-ui {
+  color: whitesmoke;
+}
+
+.add-middle-button, .tooltip {
+  transition: 0.25s ease opacity;
 }
