@@ -11,14 +11,14 @@
     random.addEventListener('click', randomizeColors);
   }
 
-  /** Sets the background color of each color card to its span's hex color. */
+  /** Sets the background color of each color card to its input's hex color. */
   function setCardColors() {
     let cards = document.querySelectorAll('.color-card');
     for (let i = 0; i < cards.length; i++) {
       let card = cards[i];
       card.classList.remove('place-holder-fill');
-      let color = card.querySelector('span');
-      card.style.backgroundColor = color.textContent;
+      let color = card.querySelector('.color-input');
+      card.style.backgroundColor = color.value;
     }
   }
 
@@ -48,13 +48,22 @@
       colorPicker.addEventListener('change', colorChange);
       colorPicker.card = card;
 
+      let colorInput = card.querySelector('.color-input');
+      colorInput.addEventListener('change', colorChange);
+      colorInput.card = card;
+
       let addMiddle = card.querySelector('.add-middle-button');
       addMiddle.addEventListener('click', addCard);
       addMiddle.card = card;
+      if (i !== 0) {
+        addMiddle.classList.remove('hidden');
+      } else {
+        addMiddle.classList.add('hidden');
+      }
 
-      let colorLabel = card.querySelector('.color-value');
-      colorLabel.addEventListener('click', copyColor);
-      colorLabel.card = card;
+      let copyButton = card.querySelector('.copy-button');
+      copyButton.addEventListener('click', copyColor);
+      copyButton.card = card;
     }
   }
 
@@ -64,6 +73,12 @@
    */
   function removeCard(evt) {
     let container = document.querySelector('#colors-container');
+    let cards = document.querySelectorAll('.color-card');
+    let pos = findCard(cards, evt.currentTarget.card);
+    if (pos === 0) {
+      let addMiddle = cards[pos + 1].querySelector('.add-middle-button');
+      addMiddle.classList.add('hidden');
+    }
     container.removeChild(evt.currentTarget.card);
   }
 
@@ -95,6 +110,13 @@
       return;
     }
 
+    if (pos === 1) {
+      let addMiddleCur = cards[pos].querySelector('.add-middle-button');
+      addMiddleCur.classList.add('hidden');
+      let addMiddlePrv = cards[pos - 1].querySelector('.add-middle-button');
+      addMiddlePrv.classList.remove('hidden');
+    }
+
     /*
      * learned the line below from:
      * https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore
@@ -112,6 +134,13 @@
     let pos = findCard(cards, evt.currentTarget.card);
     if (pos === cards.length) {
       return;
+    }
+
+    if (pos === 0) {
+      let addMiddleCur = cards[pos].querySelector('.add-middle-button');
+      addMiddleCur.classList.remove('hidden');
+      let addMiddleNxt = cards[pos + 1].querySelector('.add-middle-button');
+      addMiddleNxt.classList.add('hidden');
     }
 
     /*
@@ -133,40 +162,53 @@
     let pos = findCard(cards, evt.currentTarget.card);
 
     let colorA, colorB;
-    colorA = cards[pos].querySelector('span').textContent;
-    if (pos === cards.length) {
-      colorB = colorA;
-    } else {
-      colorB = cards[pos + 1].querySelector('span').textContent;
-    }
+    colorA = cards[pos].querySelector('.color-input').value;
+    colorB = cards[pos - 1].querySelector('.color-input').value;
+
     let rgba = convertToRBG(colorA);
     let rgbb = convertToRBG(colorB);
     let middle = convertToHex(
         (rgba[0] + rgbb[0]) / 2,
         (rgba[1] + rgbb[1]) / 2,
         (rgba[2] + rgbb[2]) / 2
-    );
+    ).toUpperCase();
 
     let newCard = cards[0].cloneNode(true);
-    let span = newCard.querySelector('span');
-    let input = newCard.querySelector('input');
-    newCard.style.backgroundColor = middle;
-    span.textContent = middle;
-    input.value = middle;
+    // let colorInput = newCard.querySelector('.color-input');
+    let colorPicker = newCard.querySelector('input');
+    // newCard.style.backgroundColor = middle;
+    // colorInput.value = middle;
+    colorPicker.value = middle;
+    updateCardColor(newCard, middle);
 
     let container = document.querySelector('#colors-container');
-    container.insertBefore(newCard, cards[pos + 1]);
+    container.insertBefore(newCard, cards[pos]);
 
     setCardListeners();
   }
 
   /**
-   * Triggers when an input's color value is changed, updates the cards span text and
-   * backgroundColor style property.
+   * Triggers when an input's color value is changed, updates the cards text input and
+   * backgroundColor style property. Has some validation logic, which will only matter
+   * if this function is triggered by the text input.
    * @param {Event} evt event object for the event which triggered the function
    */
   function colorChange(evt) {
-    updateCardColor(evt.currentTarget.card, evt.target.value);
+    let color = evt.target.value.replace(/[^A-Fa-f0-9]/g, "");
+    if (color.length >= 7 && !color.includes("#")) {
+      // Something is off, we can just chop excess off the string and hope for the best
+      color = "#" + color.substring(0, 6);
+    }
+    if (color.length === 6 && !color.includes("#")) {
+      // Looks like a valid hex, but missing the '#'
+      color = "#" + color;
+    }
+    if (color.length < 6) {
+      // Not valid, so we should undo the text input value change
+      const colorPicker = evt.currentTarget.parentNode.querySelector('input');
+      color = colorPicker.value;
+    }
+    updateCardColor(evt.currentTarget.card, color);
   }
 
   /**
@@ -178,31 +220,31 @@
   function updateCardColor(card, color) {
     card.style.backgroundColor = color;
     card.querySelector('input').value = color;
-    let span = card.querySelector('span');
-    span.textContent = color;
+    let colorInput = card.querySelector('.color-input');
+    colorInput.value = color.toUpperCase();
     if (!isLightColor(color)) {
-      span.classList.add('light-ui');
       let buttons = card.querySelectorAll('button');
       for (let i = 0; i < buttons.length; i++) {
         buttons[i].classList.add('light-ui');
       }
+      colorInput.classList.add('light-ui');
     } else {
-      span.classList.remove('light-ui');
       let buttons = card.querySelectorAll('button');
       for (let i = 0; i < buttons.length; i++) {
         buttons[i].classList.remove('light-ui');
       }
+      colorInput.classList.remove('light-ui');
     }
   }
 
   /**
-   * On click function for the span displaying card color hex. Copies color to clipboard.
+   * On click function for the input displaying card color hex. Copies color to clipboard.
    * Also handles the tooltip, changing the text.
    * @param {Event} evt event object for the event which triggered the function
    */
   function copyColor(evt) {
-    let span = evt.currentTarget.card.querySelector('span');
-    navigator.clipboard.writeText(span.textContent);
+    let color = evt.currentTarget.card.querySelector('.color-input');
+    navigator.clipboard.writeText(color.value);
     let tooltip = evt.currentTarget.card.querySelector('.tooltip');
     tooltip.textContent = "Copied!";
 
