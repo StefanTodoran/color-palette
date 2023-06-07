@@ -8,4 +8,6 @@ Get started by clicking randomize until you see a couple colors you like. If you
 
 ### TODO
 
-Investigate if github pages allows serving from urls other than the root (so that the path can determine the colors on screen).
+* Get card colors from window hash
+* Update window hash when changing colors
+* Add drag and drop for cards
